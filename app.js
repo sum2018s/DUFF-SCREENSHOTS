@@ -26,14 +26,79 @@ function createScene() {
   groundMat.diffuseColor = new BABYLON.Color3(0.12, 0.16, 0.18);
   groundMat.specularColor = new BABYLON.Color3(0.08, 0.08, 0.08);
 
-  // EXPERIMENT HERE. Change one value, predict the result, save, and reload.
-  const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", { diameter: 2.4, segments: 48 }, scene);
-  sphere.position.y = 1.2;
-  const sphereMat = new BABYLON.StandardMaterial("sphereMat", scene);
-  sphereMat.diffuseColor = new BABYLON.Color3(0.85, 0.08, 0.1);
-  sphereMat.specularColor = new BABYLON.Color3(1, 0.75, 0.45);
-  sphereMat.roughness = 0.28;
-  sphere.material = sphereMat;
+  // Theme customization: replace the template sphere with a DUFF-themed soda can.
+  const canBody = BABYLON.MeshBuilder.CreateCylinder("duffCan", {
+    height: 3.8,
+    diameter: 2.2,
+    tessellation: 64
+  }, scene);
+  canBody.position.y = 1.9;
+
+  const canMat = new BABYLON.StandardMaterial("duffCanMat", scene);
+  canMat.diffuseColor = new BABYLON.Color3(0.86, 0.03, 0.05);
+  canMat.specularColor = new BABYLON.Color3(0.9, 0.75, 0.55);
+  canMat.roughness = 0.25;
+  canBody.material = canMat;
+
+  const top = BABYLON.MeshBuilder.CreateCylinder("canTop", {
+    height: 0.12,
+    diameter: 2.22,
+    tessellation: 64
+  }, scene);
+  top.position.y = 3.84;
+  const metalMat = new BABYLON.StandardMaterial("metalMat", scene);
+  metalMat.diffuseColor = new BABYLON.Color3(0.65, 0.67, 0.7);
+  metalMat.specularColor = new BABYLON.Color3(1, 1, 1);
+  top.material = metalMat;
+
+  const bottom = BABYLON.MeshBuilder.CreateCylinder("canBottom", {
+    height: 0.12,
+    diameter: 2.22,
+    tessellation: 64
+  }, scene);
+  bottom.position.y = 0;
+  bottom.material = metalMat;
+
+  const label = BABYLON.MeshBuilder.CreateCylinder("duffLabel", {
+    height: 1.45,
+    diameter: 2.24,
+    tessellation: 64
+  }, scene);
+  label.position.y = 2.05;
+  const labelMat = new BABYLON.StandardMaterial("labelMat", scene);
+  labelMat.diffuseColor = new BABYLON.Color3(1, 0.84, 0.08);
+  labelMat.specularColor = new BABYLON.Color3(0.8, 0.55, 0.1);
+  label.material = labelMat;
+
+  // White front badge makes the DUFF theme immediately visible.
+  const badge = BABYLON.MeshBuilder.CreatePlane("duffBadge", {
+    width: 1.65,
+    height: 0.7
+  }, scene);
+  badge.position = new BABYLON.Vector3(0, 2.15, -1.14);
+  badge.rotation.y = Math.PI;
+  const badgeTexture = new BABYLON.DynamicTexture("duffBadgeTexture", {
+    width: 512,
+    height: 220
+  }, scene, true);
+  const badgeContext = badgeTexture.getContext();
+  badgeContext.fillStyle = "#ffffff";
+  badgeContext.fillRect(0, 0, 512, 220);
+  badgeContext.strokeStyle = "#111111";
+  badgeContext.lineWidth = 14;
+  badgeContext.strokeRect(7, 7, 498, 206);
+  badgeContext.fillStyle = "#111111";
+  badgeContext.font = "900 118px Arial";
+  badgeContext.textAlign = "center";
+  badgeContext.textBaseline = "middle";
+  badgeContext.fillText("DUFF", 256, 115);
+  badgeTexture.update();
+
+  const badgeMat = new BABYLON.StandardMaterial("badgeMat", scene);
+  badgeMat.diffuseTexture = badgeTexture;
+  badgeMat.emissiveColor = new BABYLON.Color3(0.08, 0.08, 0.08);
+  badge.material = badgeMat;
+
   const ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 10, height: 10, subdivisions: 2 }, scene);
   ground.material = groundMat;
 
@@ -67,8 +132,8 @@ try {
   resetButton.disabled = false;
 
   // INTRO PRACTICE: replace these messages with your own accurate context.
-  console.log("Week 4: sphere and ground scene loaded.");
-  statusText.textContent = "Scene ready: a sphere on a ground plane.";
+  console.log("Week 5: DUFF-themed can and ground scene loaded.");
+  statusText.textContent = "Scene ready: a DUFF-themed can on a ground plane.";
 } catch (error) {
   if (engine) engine.dispose();
   canvas.hidden = true;
